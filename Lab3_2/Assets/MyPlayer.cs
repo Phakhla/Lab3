@@ -4,98 +4,65 @@ using UnityEngine;
 
 public class MyPlayer : MonoBehaviour
 {
-     //Never set the value of a public variable here - the inspector will override it without telling you.
-    //If you need to, set it in Start() instead
-
-    public float speed; //'float' is short for floating point number, which is basically just a normal number
-
-    public List<WeaponBehaviour> weapons = new List<WeaponBehaviour>();
-    public int selectedWeaponIndex;
-
-    // Start is called before the first frame update
+        // Start is called before the first frame update
+    public float speed;
+    public WeaponBehaviour [] weapons;
+    public int arraySize;
+    int selectedWeaponIndex = 0;
+    
     void Start()
     {
-        References.thePlayer = gameObject;
-        selectedWeaponIndex = 0;
+    References.thePlayer = gameObject;
+    weapons = new WeaponBehaviour [arraySize];
+    for (int index =0;index<arraySize;index++){
+    weapons[index] = new WeaponBehaviour();
     }
-
+    selectedWeaponIndex = 0;
+    }
     // Update is called once per frame
     void Update()
     {
-
-        //WASD to move
-        Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        Rigidbody ourRigidBody = GetComponent<Rigidbody>();
-        ourRigidBody.velocity = inputVector * speed;
-
-        Ray rayFromCameraToCursor = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane playerPlane = new Plane(Vector3.up, transform.position);
-        playerPlane.Raycast(rayFromCameraToCursor, out float distanceFromCamera);
-        Vector3 cursorPosition = rayFromCameraToCursor.GetPoint(distanceFromCamera);
-
-        //Face the new position
-        Vector3 lookAtPosition = cursorPosition;
-        transform.LookAt(lookAtPosition);
-
-        //Firing
-        if (weapons.Count > 0 && Input.GetButton("Fire1"))
-        {
-            //Tell our weapon to fire
-            weapons[selectedWeaponIndex].Fire(cursorPosition);
-        }
-
-        //weapon switching
-        if (Input.GetButtonDown("Fire2"))
-        {
-            ChangeWeaponIndex(selectedWeaponIndex + 1);
-        }
-    }
-
-    private void ChangeWeaponIndex(int index)
+    //การเคลื่อนที่ของแท่นปืน
+    Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+    Rigidbody ourRigidBody = GetComponent<Rigidbody>();
+    ourRigidBody.velocity = inputVector * speed;
+    //การหมุนแท่นปืนเป็นวงกลม
+    Ray rayFromCameraToCursor = Camera.main.ScreenPointToRay(Input.mousePosition);
+    Plane playerPlane = new Plane(Vector3.up, transform.position);
+    playerPlane.Raycast(rayFromCameraToCursor, out float distanceFromCamera);
+    Vector3 cursorPosition = rayFromCameraToCursor.GetPoint(distanceFromCamera);
+    gameObject.transform.LookAt(cursorPosition);
+    //กำหนดให้กดปุ่มเม้าซ้ายยิงปืน
+    //  if (weapons.Count > 0 && Input.GetButton("Fire2"))
+    //  {
+    //  //Tell our weapon to fire
+    //  weapons[selectedWeaponIndex].Fire(cursorPosition);
+    //  }
+    if (Input.GetButton("Fire1"))
     {
-
-        //Change our index
-        selectedWeaponIndex = index;
-        //If it's gone too far, loop back around
-        if (selectedWeaponIndex >= weapons.Count)
-        {
-            selectedWeaponIndex = 0;
-        }
-
-        //For each weapon in our list
-        for (
-            int i = 0; //Declare a variable to keep track of how many iterations we've done
-            i < weapons.Count; //Set a limit for how high this variable can go
-            i++ //Run this after each time we iterate - increase the iteration count
-        )
-        {
-            if (i == selectedWeaponIndex)
-            {
-                //If it's the one we just selected, make it visible - 'enable' it
-                weapons[i].gameObject.SetActive(true);
-            } else
-            {
-                //If it's not the one we just selected, hide it - disable it.
-                weapons[i].gameObject.SetActive(false);
-            }
-        }
+    //Tell our weapon to fire
+        weapons[selectedWeaponIndex].Fire(cursorPosition);
+    }
+    //   if (Input.GetButtonDown("Fire2"))
+    //     {
+    //         ChangeWeaponIndex(selectedWeaponIndex + 1);
+    //     }
     }
 
-//  เมื่อชนกับอาวุธ
+    //เมื่อแท่นปืนชนเข้ากับอาวุธ
     private void OnTriggerEnter(Collider other)
     {
         WeaponBehaviour theirWeapon = other.GetComponentInParent<WeaponBehaviour>();
         if (theirWeapon != null)
         {
-            //Add it to our internal list
-            weapons.Add(theirWeapon);
-            //Move it to our location
-            theirWeapon.transform.position = transform.position;
-            theirWeapon.transform.rotation = transform.rotation;
-            //Parent it to us - attach it to us, so it moves with us
-            theirWeapon.transform.SetParent(transform);
-            //Select it!
-            //ChangeWeaponIndex(weapons.Count - 1);
+        //เพื่ออาวุธ
+        //weapons.Add(theirWeapon);
+        weapons[selectedWeaponIndex] = theirWeapon;
+        //เปลี่ยนตำแหน่ง
+        theirWeapon.transform.position = transform.position;
+        theirWeapon.transform.rotation = transform.rotation;
+        //เปลี่ยนให้อาวุธเป็นผู้ติดตาม
+        theirWeapon.transform.SetParent(transform);
         }
     }
 

@@ -952,9 +952,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8036f134e44946a48bb35ebd02d911c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
-  weapons: []
-  selectedWeaponIndex: 0
+  speed: 15
+  weapons:
+  - {fileID: 0}
+  arraySize: 3
 --- !u!54 &1490939258
 Rigidbody:
   m_ObjectHideFlags: 0

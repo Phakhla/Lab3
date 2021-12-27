@@ -57,8 +57,8 @@
      <Compile Include="Assets\AssetsBackup\BulletBehaviour.cs" />
      <Compile Include="Assets\AssetsBackup\PlayerBehaviour.cs" />
      <Compile Include="Assets\AssetsBackup\EnemySpawner.cs" />
-     <Compile Include="Assets\AssetsBackup\EnemyBehaviour.cs" />
      <Compile Include="Assets\MyPlayer.cs" />
+     <Compile Include="Assets\AssetsBackup\EnemyBehaviour.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.24f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
